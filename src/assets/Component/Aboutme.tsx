@@ -2,11 +2,12 @@
 
  const Aboutme: React.FC = () => {
    return (
-     <div className=" flex flex-col h-screen max-w-screen-2xl">
+   
        
-       <div className=" inset-0 bg-green-90  w-screen  z-10"></div>
+       
       
-       <div className=" bg-customGreen-950 w-screen h-full  bg-opacity-95 ring-offset-custom-green-800 text-left p-5 z-20 overflow-hidden">
+       <div className=" bg-customGreen-950  h-full container  bg-opacity-95  p-5 z-20 "> 
+        <div className=" flex flex-col">
          <div className="flex flex-row justify-center">
            <h1 className="text-4xl font-bold text-black mb-8">About</h1>{" "}
            <h1 className="text-indigo-800 text-4xl ml-3">Me</h1>
