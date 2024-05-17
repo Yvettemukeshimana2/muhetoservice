@@ -1,4 +1,4 @@
- import React, { useState, useEffect } from "react";
+ import React, { useState } from "react";
  import "./App.css";
  import im from "./images/ic - Copy.png";
  import Aboutme from "./assets/Component/Aboutme";
