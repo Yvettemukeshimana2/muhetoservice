@@ -46,7 +46,6 @@ const Home: React.FC = () => {
             className="object-cover w-full h-full duration-500 ease-in-out"
           />
 
-         
           <div
             className="absolute inset-0 bg-black"
             style={{
@@ -58,13 +57,16 @@ const Home: React.FC = () => {
           <h1 className="text-2xl text-white font-semibold">
             {images[currentIndex].description}
           </h1>
+          <h1 className="text-5xl md:text-5xl font-bold mt-10 text-white text-center">
+            BATO <span className="text-yellow-500 ">BATARI GITO</span>
+          </h1>
         </div>
       </div>
-          <AboutUs />
-     
+      <AboutUs />
+
       <OurServices />
-     
-      <Specialties/>
+
+      <Specialties />
       <OurProcess />
     </div>
   );

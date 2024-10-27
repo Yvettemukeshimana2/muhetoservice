@@ -104,13 +104,13 @@
                    onClick={handleMenuItemClick}
                  />
                  <MenuItem
-                   title="Venuse"
+                   title="Insipirations"
                    address="/venue"
                    Icon={FiActivity}
                    onClick={handleMenuItemClick}
                  />
                  <MenuItem
-                   title="Projects"
+                   title="Publications"
                    address="/projects"
                    Icon={FiPackage}
                    onClick={handleMenuItemClick}

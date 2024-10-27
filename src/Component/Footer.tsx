@@ -33,7 +33,7 @@
     ];
     const categories = ["Useful Links", "Services", "Company"];
     return (
-      <footer className=" bg-yellow-700 text-white py-8">
+      <footer className="  bg-gradient-to-b from-yellow-800 to-yellow-600 text-white  py-8">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row md:justify-between mb-6">
             <div>
@@ -47,7 +47,7 @@
                 <span className="text-green-200 font-semibold mb-3">
                   {category}
                 </span>
-                <div className="border-l-2 text-sm flex flex-col">
+                <div className="text-sm font-normal flex flex-col">
                   {links
                     .filter((link) => link.category === category)
                     .map((link) => (
@@ -90,15 +90,15 @@
                   </a>
                 ))}
               </div>
-              <div className="flex justify-end mt-20 mr-10">
-                <button className="flex justify-end rounded-full bg-green-500 w-70 p-2">
-                  Book a Consultancy
+              <div className="flex justify-center w-32 mt-20 mr-10">
+                <button className="flex justify-center rounded-full w-56  font-normal bg-yellow-500  p-3">
+                  Contact Us
                 </button>
               </div>
             </div>
           </div>
           <div className="border-t border-gray-700 mt-6 pt-6 text-center">
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-600 text-md">
               © {year} {companyName}. All rights reserved.
             </p>
           </div>
