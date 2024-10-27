@@ -75,7 +75,7 @@ import OurTeam from "./Ourteam";
 
          {/* Info Sections */}
          <div className="grid md:grid-cols-2 gap-12 mb-20">
-           {sections.map((section, index) => (
+           {sections.map((section,) => (
              <div
                key={section.title}
                className="bg-gray-50 rounded-lg p-8 shadow-lg"
