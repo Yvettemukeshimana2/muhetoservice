@@ -137,7 +137,7 @@
                  </div>
                  <MenuItem
                    title="Inspirations"
-                   address="/inspiration"
+                   address="/insipiration"
                    Icon={FiActivity}
                    onClick={handleMenuItemClick}
                  />
