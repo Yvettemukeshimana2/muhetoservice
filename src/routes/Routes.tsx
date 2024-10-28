@@ -9,6 +9,10 @@ import AboutUs1 from "../pages/Aboutus1";
 import VenuePage from "../pages/Venue";
 import ServicesPage from "../pages/Venue"; // Correct path for ServicesPage component
 import ServiceDetail from "../pages/ServiceDetail";
+import Publication from "../pages/Publication";
+import ContactPage from "../pages/Contact";
+import InspirationPage from "../pages/Inspiration";
+import HospitalityMaterials from "../pages/Material";
 
 // Error Component
 export const Error404 = () => <div>Page not found</div>;
@@ -52,6 +56,10 @@ const routes = createBrowserRouter([
         path: "services/:id",
         element: <ServiceDetailWrapper />, // Route for each service detail
       },
+      { path: "publication", element: <Publication /> },
+      { path: "contactus", element: <ContactPage /> },
+      { path: "insipiration", element: <InspirationPage /> },
+      { path: "material", element: <HospitalityMaterials /> },
     ],
   },
 ]);

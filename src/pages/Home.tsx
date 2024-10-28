@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import im1 from "../assets/images/LOLA-Event-Productions-Wedding-Planning-Tent-RichHarvestFarm-034.jpg";
 import im2 from "../assets/images/image1.avif";
-import im3 from "../assets/images/LOLA-Event-Productions-Wedding-Planning-Tent-RichHarvestFarm-014.jpg";
+import im3 from "../assets/images/3U8A0855.jpg";
 import OurServices from "./service";
 import AboutUs from "./Aboutus";
 import OurProcess from "./Ourprocess";
@@ -30,7 +30,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 3000); // Change every 3 seconds
+    }, 6000); // Change every 3 seconds
 
     return () => clearInterval(interval); // Cleanup on unmount
   }, []);

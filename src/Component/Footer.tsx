@@ -1,53 +1,61 @@
   import React from "react";
+
   interface FooterProps {
     companyName: string;
     year: number;
   }
+
   const Footer: React.FC<FooterProps> = ({ companyName, year }) => {
     const links = [
       { href: "/", label: "Home", category: "Useful Links" },
       { href: "/about", label: "About", category: "Useful Links" },
       { href: "/contact", label: "Contact", category: "Useful Links" },
-      { href: "/careers", label: "Careers", category: "Company" },
-      { href: "/crew", label: "Crew", category: "Company" },
       {
-        href: "/digital-marketing",
-        label: "Digital Marketing",
+        href: "/venue",
+        label: "Manufacturing& Processing Industry",
         category: "Services",
       },
       {
-        href: "/software-development",
-        label: "Software Development",
+        href: "/venue",
+        label: "Power plant Industry ",
         category: "Services",
       },
       {
-        href: "/specialized-design",
-        label: "Specialized Design",
+        href: "/venue",
+        label: "Agriculture Industry ",
         category: "Services",
       },
       {
-        href: "/business-development",
-        label: "Business Development",
+        href: "/venue",
+        label: "Construction Industry",
         category: "Services",
       },
     ];
-    const categories = ["Useful Links", "Services", "Company"];
+
+    const categories = ["Useful Links", "Services"];
+
     return (
-      <footer className="  bg-gradient-to-b from-yellow-800 to-yellow-600 text-white  py-8">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row md:justify-between mb-6">
+      <footer className="bg-yellow-700  text-white py-8">
+        <div className="container mx-auto px-4 ">
+          <div className="grid grid-cols-4 sm:grid-cols-5 md:justify-between mb-6">
+            {/* Company Info */}
             <div>
               <h2 className="text-xl font-bold">{companyName}</h2>
-              <p className="text-gray-400">
+              <p className="text-white-400">
                 Providing quality services since {year}
               </p>
             </div>
+
+            {/* Links and Services */}
             {categories.map((category) => (
-              <div key={category} className="flex flex-col mb-6">
-                <span className="text-green-200 font-semibold mb-3">
+              <div
+                key={category}
+                className="flex font-normal text-lg flex-col mb-6"
+              >
+                <span className="text-black  font-normal mb-3">
                   {category}
                 </span>
-                <div className="text-sm font-normal flex flex-col">
+                <div className=" text-sm flex flex-col">
                   {links
                     .filter((link) => link.category === category)
                     .map((link) => (
@@ -62,8 +70,30 @@
                 </div>
               </div>
             ))}
+
+            {/* Location Info */}
+            <div className="flex flex-col mb-6">
+              <span className="text-black font-bold ml-8 mb-3">
+                Contact Us
+              </span>
+              <div className="text-sm text-white ml-8">
+                <p>Phone Number: +250789319155, +250787042094</p>
+                <p>
+                  Email:{" "}
+                  <a
+                    href="mailto:nexgene24@gmail.com"
+                    className="hover:text-gray-400"
+                  >
+                    nexgene24@gmail.com
+                  </a>
+                </p>
+                <p>Physical Address: Kigali, Nyarugenge, KN 140 ST</p>
+              </div>
+            </div>
+
+            {/* Social Media Links */}
             <div className="flex flex-col">
-              <div className="flex  space-x-6 mt-6 md:mt-0">
+              <div className="flex space-x-6 mt-6 md:mt-0">
                 {["twitter", "facebook", "instagram"].map((platform) => (
                   <a
                     key={platform}
@@ -90,15 +120,10 @@
                   </a>
                 ))}
               </div>
-              <div className="flex justify-center w-32 mt-20 mr-10">
-                <button className="flex justify-center rounded-full w-56  font-normal bg-yellow-500  p-3">
-                  Contact Us
-                </button>
-              </div>
             </div>
           </div>
           <div className="border-t border-gray-700 mt-6 pt-6 text-center">
-            <p className="text-gray-600 text-md">
+            <p className="text-gray-400 text-sm">
               © {year} {companyName}. All rights reserved.
             </p>
           </div>
@@ -106,4 +131,5 @@
       </footer>
     );
   };
+
   export default Footer;

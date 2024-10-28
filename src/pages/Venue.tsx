@@ -57,10 +57,8 @@ import img1 from "../assets/images/LOLA-Event-Productions-Moody-Wedding-Chicago-
    };
 
    const handleBookService = (service: Service) => {
-     // Implement booking logic or open modal here
        console.log("Booking service:", service);
    };
-
    return (
      <div className="bg-gray-100 min-h-screen">
        <header className="relative bg-black">
@@ -109,6 +107,7 @@ import img1 from "../assets/images/LOLA-Event-Productions-Moody-Wedding-Chicago-
            </div>
          ))}
        </section>
+        
      </div>
    );
  };

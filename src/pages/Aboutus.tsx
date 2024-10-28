@@ -9,7 +9,7 @@ import ach2 from "../assets/images/testmony2.jpg"
    return (
      <div className="p-2 space-y-6">
        {/* Top row with Mission, Culture, and Vision */}
-       <div className="grid grid-cols-1 md:grid-cols-3 bg-yellow-700 gap-6 -mt-8">
+       <div className="grid grid-cols-1 md:grid-cols-3 bg-yellow-500 gap-6 -mt-7">
          {/* Our Mission Section */}
          <div className="relative">
            <img

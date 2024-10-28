@@ -1,5 +1,6 @@
  import { useEffect, useState } from "react";
  import MenuItem from "../reusable/MenuItem.tsx";
+ import { Link } from "react-router-dom";
  import {
    FiHome,
    FiMenu,
@@ -9,6 +10,7 @@
    FiPackage,
    FiRadio,
    FiBookmark,
+   FiChevronDown,
  } from "react-icons/fi";
  import Button from "../reusable/Button.tsx";
  import Logo from "../assets/Muhe-Logo-white.png";
@@ -17,6 +19,7 @@
  const NavBar = () => {
    const [isScrolled, setIsScrolled] = useState(false);
    const [isMenuOpen, setIsMenuOpen] = useState(false);
+   const [isServicesOpen, setIsServicesOpen] = useState(false);
 
    useEffect(() => {
      const handleScroll = () => {
@@ -57,18 +60,18 @@
            <div className="pt-10 mt-8">
              <Header />
            </div>
-           <div className="flex justify-between  bg-gradient-to-b from-yellow-800 to-yellow-500 rounded-t-sm items-center mb-28 w-full max-w-7xl ">
+           <div className="flex justify-between bg-gradient-to-b from-yellow-800 to-yellow-500 rounded-t-sm items-center mb-28 w-full max-w-7xl">
              <img
                src={Logo}
                alt="Logo"
                width="150px"
-               className="flex justify-start mr-80 "
+               className="flex justify-start mr-80"
              />
              <button className="md:hidden text-white z-50" onClick={toggleMenu}>
                {!isMenuOpen && <FiMenu size={24} />}
              </button>
              <nav
-               className={`fixed md:static flex  right-0 md:flex md:gap-8 md:bg-transparent bg-black bg-opacity-90 md:w-auto w-4/5 h-full md:h-auto flex-col md:flex-row items-center transition-transform transform ${
+               className={`fixed md:static flex right-0 md:flex md:gap-8 md:bg-transparent bg-black bg-opacity-90 md:w-auto w-4/5 h-full md:h-auto flex-col md:flex-row items-center transition-transform transform ${
                  isMenuOpen ? "translate-x-0" : "translate-x-full"
                } md:translate-x-0 z-50 pr-3`}
              >
@@ -93,25 +96,54 @@
                  />
                  <MenuItem
                    title="Contact"
-                   address="/contact"
+                   address="/contactus"
                    Icon={FiPhone}
                    onClick={handleMenuItemClick}
                  />
+                 <div
+                   className="relative"
+                   onMouseEnter={() => setIsServicesOpen(true)}
+                   onMouseLeave={() => setIsServicesOpen(false)}
+                 >
+                   <MenuItem
+                     title="Services"
+                     address=""
+                     Icon={FiRadio}
+                     onClick={handleMenuItemClick}
+                   />
+                   <FiChevronDown
+                     className={`absolute right-0 left-11 w-8 h-8 text-white top-1/2 transform -translate-y-1/2 ml-5 transition-transform ${
+                       isServicesOpen ? "rotate-180" : ""
+                     }`}
+                   />
+                   {isServicesOpen && (
+                     <div className="absolute left-0 mt-2 w-40 bg-white border rounded shadow-lg z-50">
+                       <Link
+                         to="/venue"
+                         className="block px-4 py-2 hover:bg-gray-200"
+                         onClick={() => setIsServicesOpen(false)}
+                       >
+                         Event
+                       </Link>
+                       <Link
+                         to="/material"
+                         className="block px-4 py-2 hover:bg-gray-200"
+                         onClick={() => setIsServicesOpen(false)}
+                       >
+                         Material
+                       </Link>
+                     </div>
+                   )}
+                 </div>
                  <MenuItem
-                   title="Services"
-                   address="/venue"
-                   Icon={FiRadio}
-                   onClick={handleMenuItemClick}
-                 />
-                 <MenuItem
-                   title="Insipirations"
-                   address="/venue"
+                   title="Inspirations"
+                   address="/inspiration"
                    Icon={FiActivity}
                    onClick={handleMenuItemClick}
                  />
                  <MenuItem
                    title="Publications"
-                   address="/projects"
+                   address="/publication"
                    Icon={FiPackage}
                    onClick={handleMenuItemClick}
                  />
