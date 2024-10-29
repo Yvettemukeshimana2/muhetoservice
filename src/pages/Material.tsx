@@ -131,7 +131,7 @@
    }, []);
 
    return (
-     <div className="container min-h-full max-w-screen-2xl ml-5 ">
+     <div className="container min-h-full max-w-screen-2xl ">
        <header className="relative  bg-black overflow-hidden">
          <motion.img
            initial={{ scale: 1.2 }}
