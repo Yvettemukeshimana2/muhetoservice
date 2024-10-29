@@ -27,7 +27,7 @@
      <motion.div
        initial={{ scale: 1.2 }}
        animate={{ scale: 1 }}
-       transition={{ duration: 1}}
+       transition={{ duration: 0}}
        className="min-h-screen bg-gray-50 "
      >
        <header className="relative item-center bg-black overflow-hidden">
@@ -43,7 +43,7 @@
            initial={{ y: -100, opacity: 0 }}
            animate={{ y: 0, opacity: 1 }}
            transition={{ duration: 1, delay: 0.5 }}
-           className="text-5xl absolute top-1/2 left-96 transform animate-bounce -translate-x-1/2 -translate-y-1/2 md:text-5xl font-bold text-white text-center"
+           className="text-5xl absolute top-1/2 left-1/2 transform animate-bounce -translate-x-1/2 -translate-y-1/2 md:text-5xl font-bold text-white text-center"
          >
            BATO <span className="text-yellow-500  ">BATARI GITO</span>
          </motion.h1>
@@ -220,7 +220,7 @@
 
              <button
                type="submit"
-               className="w-96 ml-16  border-2 hover:border-yellow-500 hover:bg-white text-black py-2 px-4 rounded-md bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors"
+               className="w-96 font-bold sm:ml-16  border-2 hover:border-yellow-500 hover:bg-white text-black py-2 px-4 rounded-md bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 transition-colors"
              >
                Send Message
              </button>

@@ -46,8 +46,8 @@
           <div className="grid grid-cols-4 sm:grid-cols-5  mb-6">
             {/* Company Info */}
             <div>
-              <h2 className="text-4xl font-bold">{companyName}</h2>
-              <p className="text-white-400 text-xl">
+              <h2 className="text-4xl text-yellow-500 font-bold">{companyName}</h2>
+              <p className="text-yellow-200 text-xl">
                 Providing quality services since {year}
               </p>
             </div>
@@ -58,7 +58,7 @@
                 key={category}
                 className="flex font-normal ml-8 flex-col mb-6"
               >
-                <span className="text-black  font-bold text-4xl mb-3">
+                <span className="text-yellow-500  font-bold text-4xl mb-3">
                   {category}
                 </span>
                 <div className="  flex flex-col">
@@ -68,7 +68,7 @@
                       <a
                         key={link.label}
                         href={link.href}
-                        className="hover:text-gray-400  text-xl"
+                        className="hover:text-yellow-400 text-yellow-200 text-xl"
                       >
                         {link.label}
                       </a>
@@ -79,16 +79,16 @@
 
             {/* Location Info */}
             <div className="flex font-normal flex-col mb-6 ">
-              <span className="text-black font-bold ml-8 mb-3 text-4xl">
+              <span className="text-yellow-500 font-bold ml-8 mb-3 text-4xl">
                 Contact Us
               </span>
-              <div className=" text-white ml-8 text-xl">
+              <div className=" text-yellow-200 ml-8 text-xl">
                 <p>Phone: +250788501009</p>
                 <p>
                   Email:{" "}
                   <a
                     href="mailto:ifo@muheservices.com"
-                    className="hover:text-gray-400"
+                    className="hover:text-yellow-400"
                   >
                     ifo@muheservices.com
                   </a>
@@ -98,7 +98,7 @@
             </div>
 
             {/* Social Media Links */}
-            <div className="flex flex-col ">
+            <div className="flex flex-col  ">
               <div className="flex space-x-6 mt-6 md:mt-0 ml-32">
                 {["twitter", "facebook", "instagram"].map((platform) => (
                   <a
@@ -106,7 +106,7 @@
                     href={`https://${platform}.com`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className=" text-white w-16 h-16 hover:text-gray-400"
+                    className=" text-yellow-500  w-16 h-16 hover:text-yellow-400"
                   >
                     <svg
                       fill="currentColor"
@@ -127,14 +127,14 @@
                 ))}
               </div>
                <Link to="/venue">
-              <button className=" md:block hidden justify-end ml-9 mt-12 rounded-full bg-white text-black w-full px-4 py-2">
+              <button className=" md:block hidden justify-end ml-9 mt-12 font-bold rounded-full bg-yellow-500 text-yellow-100 w-full px-4 py-2">
                 Work With Us
               </button>
             </Link>
             </div>
           </div>
           <div className="border-t border-gray-700 mt-6 pt-6 text-center">
-            <p className="text-gray-100 text-lg font-semibold">
+            <p className="text-yellow-500 text-lg font-semibold">
               © {year} {companyName}. All rights reserved.
             </p>
           </div>
