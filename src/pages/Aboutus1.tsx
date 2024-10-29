@@ -44,7 +44,7 @@ import { Link } from "react-router-dom";
            alt="Event Space"
            className="w-full bg-black h-96 object-cover opacity-40"
          />
-         <div className="absolute inset-0 bg-gradient-to-r  mb-40 from-black/70 to-black/50 flex justify-center items-center">
+         <div className="absolute inset-0 bg-gradient-to-r  mb-16 from-black/70 to-black/50 flex justify-center items-center">
            <div className="container mx-auto px-6 ml-56  ">
              <h1 className="text-5xl md:text-7xl font-bold text-white mb-4">
                Welcome to <span className="text-yellow-500">MHC</span>
