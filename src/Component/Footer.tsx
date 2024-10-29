@@ -46,7 +46,7 @@
           <div className="grid grid-cols-4 sm:grid-cols-5  mb-6">
             {/* Company Info */}
             <div>
-              <h2 className="text-3xl text-yellow-500 font-bold">{companyName}</h2>
+              <h2 className="text-2xl text-yellow-500 font-bold">{companyName}</h2>
               <p className="text-yellow-200 text-xl">
                 Providing quality services since {year}
               </p>
@@ -58,7 +58,7 @@
                 key={category}
                 className="flex font-normal ml-8 flex-col mb-6"
               >
-                <span className="text-yellow-500  font-bold text-3xl mb-3">
+                <span className="text-yellow-500  font-bold text-2xl mb-3">
                   {category}
                 </span>
                 <div className="  flex flex-col">
@@ -79,7 +79,7 @@
 
             {/* Location Info */}
             <div className="flex font-normal flex-col mb-6 ">
-              <span className="text-yellow-500 font-bold ml-8 mb-3 text-3xl">
+              <span className="text-yellow-500 font-bold ml-8 mb-3 text-2xl">
                 Contact Us
               </span>
               <div className=" text-yellow-200 ml-8 text-xl">
