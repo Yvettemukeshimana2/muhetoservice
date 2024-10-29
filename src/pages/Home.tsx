@@ -57,7 +57,7 @@ const Home: React.FC = () => {
           <h1 className="text-2xl text-white font-semibold">
             {images[currentIndex].description}
           </h1>
-          <h1 className="text-5xl md:text-5xl font-bold mt-10 text-white text-center">
+          <h1 className="text-5xl md:text-5xl font-bold mt-10 animate-pulse text-white text-center">
             BATO <span className="text-yellow-500 ">BATARI GITO</span>
           </h1>
         </div>
