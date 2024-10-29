@@ -49,7 +49,8 @@ import { Link } from "react-router-dom";
              <h1 className="text-5xl md:text-7xl font-bold text-white mb-4">
                Welcome to <span className="text-yellow-500">MHC</span>
              </h1>
-             <h1 className="text-5xl md:text-5xl font-bold text-center text-white mb-4">
+             <h1 className="text-5xl md:text-5xl font-bold text-center
+              text-white mb-4">
                BATO  <span className="text-yellow-500">BATARI GITO</span>
              </h1>
              <p className="text-2xl pb-5 text-gray-200 font-semibold ">
