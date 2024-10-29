@@ -1,6 +1,7 @@
 import bg from "../assets/images/LOLA-Event-Productions-Moody-Wedding-Chicago-Harold-Washington-Library_0610.jpg"
  import { ChevronRight, Award, History, Compass } from "lucide-react";
 import OurTeam from "./Ourteam";
+import { Link } from "react-router-dom";
  const AboutUs = () => {
    const sections = [
      {
@@ -37,13 +38,13 @@ import OurTeam from "./Ourteam";
    return (
      <div className="min-h-screen   bg-white">
        {/* Hero Section */}
-       <div className=" h-[60vh] overflow-hidden bg-black">
+       <div className=" h-[80vh] overflow-hidden bg-black">
          <img
            src={bg}
            alt="Event Space"
            className="w-full bg-black h-96 object-cover opacity-40"
          />
-         <div className="absolute inset-0 bg-gradient-to-r  mb-10 from-black/70 to-black/50 flex justify-center items-center">
+         <div className="absolute inset-0 bg-gradient-to-r  mb-40 from-black/70 to-black/50 flex justify-center items-center">
            <div className="container mx-auto px-6 ml-56  ">
              <h1 className="text-5xl md:text-7xl font-bold text-white mb-4">
                Welcome to <span className="text-yellow-500">MHC</span>
@@ -51,7 +52,7 @@ import OurTeam from "./Ourteam";
              <h1 className="text-5xl md:text-5xl font-bold text-center text-white mb-4">
                BATO  <span className="text-yellow-500">BATARI GITO</span>
              </h1>
-             <p className="text-xl text-gray-200 font-semibold max-w-2xl">
+             <p className="text-2xl pb-5 text-gray-200 font-semibold ">
                Creating extraordinary events that leave lasting impressions.
                Your vision, our expertise, perfect execution.
              </p>
@@ -121,11 +122,13 @@ import OurTeam from "./Ourteam";
          {/* Call to Action */}
 
          <OurTeam />
+         <Link to="/contactus">
          <div className="text-center">
            <button className="bg-yellow-600 text-white px-8 py-3 rounded-lg hover:bg-yellow-700 transition-colors">
              Contact Us Today
            </button>
          </div>
+         </Link>
        </div>
      </div>
    );

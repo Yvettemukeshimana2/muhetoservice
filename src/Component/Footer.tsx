@@ -1,4 +1,5 @@
   import React from "react";
+  import { Link } from "react-router-dom";
 
   interface FooterProps {
     companyName: string;
@@ -8,26 +9,31 @@
   const Footer: React.FC<FooterProps> = ({ companyName, year }) => {
     const links = [
       { href: "/", label: "Home", category: "Useful Links" },
-      { href: "/about", label: "About", category: "Useful Links" },
-      { href: "/contact", label: "Contact", category: "Useful Links" },
+      { href: "/aboutus1", label: "About", category: "Useful Links" },
+      { href: "/contactus", label: "Contact", category: "Useful Links" },
       {
         href: "/venue",
-        label: "Manufacturing& Processing Industry",
+        label: "Event Cattering",
         category: "Services",
       },
       {
         href: "/venue",
-        label: "Power plant Industry ",
+        label: "Social Media Managment",
         category: "Services",
       },
       {
         href: "/venue",
-        label: "Agriculture Industry ",
+        label: "Event Wedding",
         category: "Services",
       },
       {
         href: "/venue",
-        label: "Construction Industry",
+        label: "Hosipitality",
+        category: "Services",
+      },
+      {
+        href: "/venue",
+        label: "Concierge",
         category: "Services",
       },
     ];
@@ -37,11 +43,11 @@
     return (
       <footer className="bg-yellow-700  text-white py-8">
         <div className="container mx-auto px-4 ">
-          <div className="grid grid-cols-4 sm:grid-cols-5 md:justify-between mb-6">
+          <div className="grid grid-cols-4 sm:grid-cols-5  mb-6">
             {/* Company Info */}
             <div>
-              <h2 className="text-xl font-bold">{companyName}</h2>
-              <p className="text-white-400">
+              <h2 className="text-4xl font-bold">{companyName}</h2>
+              <p className="text-white-400 text-xl">
                 Providing quality services since {year}
               </p>
             </div>
@@ -50,19 +56,19 @@
             {categories.map((category) => (
               <div
                 key={category}
-                className="flex font-normal text-lg flex-col mb-6"
+                className="flex font-normal ml-8 flex-col mb-6"
               >
-                <span className="text-black  font-normal mb-3">
+                <span className="text-black  font-bold text-4xl mb-3">
                   {category}
                 </span>
-                <div className=" text-sm flex flex-col">
+                <div className="  flex flex-col">
                   {links
                     .filter((link) => link.category === category)
                     .map((link) => (
                       <a
                         key={link.label}
                         href={link.href}
-                        className="hover:text-gray-400 pl-2"
+                        className="hover:text-gray-400  text-xl"
                       >
                         {link.label}
                       </a>
@@ -72,35 +78,35 @@
             ))}
 
             {/* Location Info */}
-            <div className="flex flex-col mb-6">
-              <span className="text-black font-bold ml-8 mb-3">
+            <div className="flex font-normal flex-col mb-6 ">
+              <span className="text-black font-bold ml-8 mb-3 text-4xl">
                 Contact Us
               </span>
-              <div className="text-sm text-white ml-8">
-                <p>Phone Number: +250789319155, +250787042094</p>
+              <div className=" text-white ml-8 text-xl">
+                <p>Phone: +250788501009</p>
                 <p>
                   Email:{" "}
                   <a
-                    href="mailto:nexgene24@gmail.com"
+                    href="mailto:ifo@muheservices.com"
                     className="hover:text-gray-400"
                   >
-                    nexgene24@gmail.com
+                    ifo@muheservices.com
                   </a>
                 </p>
-                <p>Physical Address: Kigali, Nyarugenge, KN 140 ST</p>
+                <p>Physical Address:KG 17 Ave, Kigali-Rwanda</p>
               </div>
             </div>
 
             {/* Social Media Links */}
-            <div className="flex flex-col">
-              <div className="flex space-x-6 mt-6 md:mt-0">
+            <div className="flex flex-col ">
+              <div className="flex space-x-6 mt-6 md:mt-0 ml-32">
                 {["twitter", "facebook", "instagram"].map((platform) => (
                   <a
                     key={platform}
                     href={`https://${platform}.com`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-6 h-6 text-white hover:text-gray-400"
+                    className=" text-white w-16 h-16 hover:text-gray-400"
                   >
                     <svg
                       fill="currentColor"
@@ -120,10 +126,15 @@
                   </a>
                 ))}
               </div>
+               <Link to="/venue">
+              <button className=" md:block hidden justify-end ml-9 mt-12 rounded-full bg-white text-black w-full px-4 py-2">
+                Work With Us
+              </button>
+            </Link>
             </div>
           </div>
           <div className="border-t border-gray-700 mt-6 pt-6 text-center">
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-100 text-lg font-semibold">
               © {year} {companyName}. All rights reserved.
             </p>
           </div>
