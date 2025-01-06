@@ -1,162 +1,83 @@
- import { useEffect, useState } from "react";
- import MenuItem from "../reusable/MenuItem.tsx";
- import { Link } from "react-router-dom";
- import {
-   FiHome,
-   FiMenu,
-   FiX,
-   FiPhone,
-   FiActivity,
-   FiPackage,
-   FiRadio,
-   FiBookmark,
-   FiChevronDown,
- } from "react-icons/fi";
- import Button from "../reusable/Button.tsx";
- import Logo from "../assets/Muhe-Logo-white.png";
- import Header from "./Header.tsx";
+ import { useState } from "react";
+ import { Bell, Search, Menu, X } from "lucide-react";
 
- const NavBar = () => {
-   const [isScrolled, setIsScrolled] = useState(false);
-   const [isMenuOpen, setIsMenuOpen] = useState(false);
-   const [isServicesOpen, setIsServicesOpen] = useState(false);
-
-   useEffect(() => {
-     const handleScroll = () => {
-       setIsScrolled(window.scrollY > 0);
-     };
-
-     window.addEventListener("scroll", handleScroll);
-     return () => {
-       window.removeEventListener("scroll", handleScroll);
-     };
-   }, []);
-
-   const toggleMenu = () => {
-     setIsMenuOpen(!isMenuOpen);
-   };
-
-   const handleMenuItemClick = () => {
-     if (isMobile()) {
-       toggleMenu();
-     }
-   };
-
-   const isMobile = () => window.innerWidth <= 640;
+ const Navbar = () => {
+   const [showMobileMenu, setShowMobileMenu] = useState(false);
+   const [notifications] = useState([
+     { id: 1, text: "New user registration", time: "2 min ago" },
+     { id: 2, text: "New comment received", time: "1 hour ago" },
+     { id: 3, text: "System update", time: "2 hours ago" },
+   ]);
 
    return (
-     <>
-       {isMenuOpen && (
-         <div className="inset-0 bg-black bg-opacity-50 z-40"></div>
-       )}
-       <header
-         className={`fixed top-0 left-0 z-50 bg-black w-full h-24 flex justify-center items-center transition-all duration-300 ${
-           isScrolled
-             ? "bg-black sm:bg-opacity-75 sm:backdrop-blur-2xl"
-             : "bg-transparent"
-         }`}
+     <nav className="bg-white border-b h-16 flex items-center justify-between px-6">
+       {/* Mobile Menu Button */}
+       <button
+         className="lg:hidden"
+         onClick={() => setShowMobileMenu(!showMobileMenu)}
        >
-         <div className="flex flex-col">
-           <div className="pt-10 mt-8">
-             <Header />
-           </div>
-           <div className="flex justify-between bg-gradient-to-b from-yellow-800 to-yellow-500 rounded-t-sm items-center mb-28 w-full max-w-7xl">
-             <img
-               src={Logo}
-               alt="Logo"
-               width="150px"
-               className="flex justify-start mr-80"
-             />
-             <button className="md:hidden text-white z-50" onClick={toggleMenu}>
-               {!isMenuOpen && <FiMenu size={24} />}
-             </button>
-             <nav
-               className={`fixed md:static flex right-0 md:flex md:gap-8 md:bg-transparent bg-black bg-opacity-90 md:w-auto w-4/5 h-full md:h-auto flex-col md:flex-row items-center transition-transform transform ${
-                 isMenuOpen ? "translate-x-0" : "translate-x-full"
-               } md:translate-x-0 z-50 pr-3`}
-             >
-               <button
-                 className="md:hidden text-white absolute top-4 right-4 z-50"
-                 onClick={toggleMenu}
-               >
-                 <FiX size={24} />
-               </button>
-               <div className="flex flex-col sm:flex-row gap-6 w-full mt-8 md:mt-0">
-                 <MenuItem
-                   title="Home"
-                   address="/"
-                   Icon={FiHome}
-                   onClick={handleMenuItemClick}
-                 />
-                 <MenuItem
-                   title="About Us"
-                   address="/aboutus1"
-                   Icon={FiBookmark}
-                   onClick={handleMenuItemClick}
-                 />
-                 <MenuItem
-                   title="Contact"
-                   address="/contactus"
-                   Icon={FiPhone}
-                   onClick={handleMenuItemClick}
-                 />
-                 <div
-                   className="relative"
-                   onMouseEnter={() => setIsServicesOpen(true)}
-                   onMouseLeave={() => setIsServicesOpen(false)}
-                 >
-                   <MenuItem
-                     title="Services"
-                     address=""
-                     Icon={FiRadio}
-                     onClick={handleMenuItemClick}
-                   />
-                   <FiChevronDown
-                     className={`absolute right-0 left-11 w-8 h-8 text-white top-1/2 transform -translate-y-1/2 ml-5 transition-transform ${
-                       isServicesOpen ? "rotate-180" : ""
-                     }`}
-                   />
-                   {isServicesOpen && (
-                     <div className="absolute left-0 mb-32 w-40 bg-white bg-opacity-20 border rounded shadow-lg z-50">
-                       <Link
-                         to="/venue"
-                         className="block px-4 py-2 hover:bg-gray-200"
-                         onClick={() => setIsServicesOpen(false)}
-                       >
-                         Event
-                       </Link>
-                       <Link
-                         to="/material"
-                         className="block px-4 py-2 hover:bg-gray-200"
-                         onClick={() => setIsServicesOpen(false)}
-                       >
-                         Material
-                       </Link>
+         {showMobileMenu ? (
+           <X className="h-6 w-6 text-gray-600" />
+         ) : (
+           <Menu className="h-6 w-6 text-gray-600" />
+         )}
+       </button>
+
+       {/* Search Bar */}
+       <div className="hidden md:flex items-center flex-1 max-w-lg">
+         <div className="relative w-full">
+           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+           <input
+             type="text"
+             placeholder="Search..."
+             className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:border-blue-500"
+           />
+         </div>
+       </div>
+
+       {/* Right Section */}
+       <div className="flex items-center space-x-4">
+         {/* Notifications */}
+         <div className="relative">
+           <button className="p-2 hover:bg-gray-100 rounded-full relative">
+             <Bell className="h-5 w-5 text-gray-600" />
+             <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full"></span>
+           </button>
+
+           {/* Notifications Dropdown */}
+           <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border hidden group-hover:block">
+             <div className="p-4">
+               <h3 className="text-sm font-semibold text-gray-900">
+                 Notifications
+               </h3>
+               <div className="mt-2 space-y-3">
+                 {notifications.map((notification) => (
+                   <div
+                     key={notification.id}
+                     className="flex items-start space-x-3"
+                   >
+                     <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                       <Bell className="h-4 w-4 text-blue-600" />
                      </div>
-                   )}
-                 </div>
-                 <MenuItem
-                   title="Inspirations"
-                   address="/insipiration"
-                   Icon={FiActivity}
-                   onClick={handleMenuItemClick}
-                 />
-                 <MenuItem
-                   title="Publications"
-                   address="/publication"
-                   Icon={FiPackage}
-                   onClick={handleMenuItemClick}
-                 />
+                     <div>
+                       <p className="text-sm text-gray-900">
+                         {notification.text}
+                       </p>
+                       <p className="text-xs text-gray-500">
+                         {notification.time}
+                       </p>
+                     </div>
+                   </div>
+                 ))}
                </div>
-               <div className="md:hidden mt-4 w-full">
-                 <Button label="Contact Us" onClick={toggleMenu} />
-               </div>
-             </nav>
+             </div>
            </div>
          </div>
-       </header>
-     </>
+
+         {/* Profile Menu */}
+         <div className="h-8 w-8 rounded-full bg-gray-200"></div>
+       </div>
+     </nav>
    );
  };
-
- export default NavBar;
+ export default Navbar;
