@@ -8,24 +8,24 @@
  import SettingsPage from "./pages/Setting";
  import AnalyticsPage from "./pages/AnalyticPage";
 
- // Define the type for ProtectedRoute props
  interface ProtectedRouteProps {
-   children: JSX.Element; // Expecting a single JSX element as children
+   children: JSX.Element;
  }
 
- // Protected Route Component
  const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-   const isAuthenticated = localStorage.getItem("token") !== null; // Check if user is authenticated
-   return isAuthenticated ? children : <Navigate to="/login" />; // Redirect if not authenticated
+   const isAuthenticated = localStorage.getItem("token") !== null;
+   return isAuthenticated ? children : <Navigate to="/login" replace />;
  };
 
  const App: React.FC = () => {
    return (
      <BrowserRouter>
        <Routes>
+         {/* Always show login first */}
+         <Route path="/" element={<Navigate to="/login" replace />} />
          <Route path="/login" element={<LoginPage />} />
 
-         {/* Protected Routes */}
+         {/* Protected Dashboard Routes */}
          <Route
            path="/"
            element={
@@ -42,8 +42,8 @@
            <Route path="bookedmaterial" element={<AnalyticsPage />} />
          </Route>
 
-         {/* Catch-all route */}
-         <Route path="*" element={<Navigate to="/" replace />} />
+         {/* Catch-all redirect to login */}
+         <Route path="*" element={<Navigate to="/login" replace />} />
        </Routes>
      </BrowserRouter>
    );

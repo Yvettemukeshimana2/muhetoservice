@@ -13,13 +13,10 @@
    Package,
    Users,
    Clock,
-   PhoneCall,
-   Mail,
    Search,
-   ChevronUp,
-   ChevronDown,
    CheckCircle,
    Trash2,
+   ArrowLeft,
  } from "lucide-react";
 
  interface BookingData {
@@ -40,42 +37,7 @@
    icon: React.ElementType;
  }
 
- // Enhanced sample data with IDs
- const bookingsData: BookingData[] = [
-   {
-     id: "1",
-     fullName: "John Smith",
-     materialType: "Audio Equipment",
-     email: "john.smith@email.com",
-     phoneNumber: "(555) 123-4567",
-     quantity: 2,
-     pickupDateTime: "2024-03-15 10:00 AM",
-     returnDateTime: "2024-03-17 5:00 PM",
-     status: "Active",
-   },
-   {
-     id: "2",
-     fullName: "Sarah Johnson",
-     materialType: "Projector",
-     email: "sarah.j@email.com",
-     phoneNumber: "(555) 234-5678",
-     quantity: 1,
-     pickupDateTime: "2024-03-16 2:00 PM",
-     returnDateTime: "2024-03-18 2:00 PM",
-     status: "Pending",
-   },
-   {
-     id: "3",
-     fullName: "Mike Williams",
-     materialType: "Event Space",
-     email: "mike.w@email.com",
-     phoneNumber: "(555) 345-6789",
-     quantity: 1,
-     pickupDateTime: "2024-03-14 9:00 AM",
-     returnDateTime: "2024-03-14 6:00 PM",
-     status: "Completed",
-   },
- ];
+ const bookingsData: BookingData[] = [];
 
  const trendData = [
    { name: "Mon", bookings: 4 },
@@ -124,73 +86,91 @@
    const [bookings, setBookings] = useState<BookingData[]>(bookingsData);
 
    const stats = [
-     { title: "Total Bookings", value: "156", icon: Package },
-     { title: "Active Bookings", value: "23", icon: Users },
-     { title: "Pending Returns", value: "12", icon: Clock },
-     { title: "Today's Pickups", value: "8", icon: Calendar },
+     {
+       title: "Total Bookings",
+       value: bookings.length.toString(),
+       icon: Package,
+     },
+     {
+       title: "Active Bookings",
+       value: bookings.filter((b) => b.status === "Active").length.toString(),
+       icon: Users,
+     },
+     {
+       title: "Pending Approvals",
+       value: bookings.filter((b) => b.status === "Pending").length.toString(),
+       icon: Clock,
+     },
+     {
+       title: "Today's Pickups",
+       value: bookings
+         .filter((b) =>
+           b.pickupDateTime.includes(new Date().toISOString().split("T")[0])
+         )
+         .length.toString(),
+       icon: Calendar,
+     },
    ];
 
    const filteredAndSortedBookings = useMemo(() => {
      let result = [...bookings];
-
-     // Apply search filter
      if (searchTerm) {
-       result = result.filter(
-         (booking) =>
-           booking.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           booking.materialType
-             .toLowerCase()
-             .includes(searchTerm.toLowerCase()) ||
-           booking.email.toLowerCase().includes(searchTerm.toLowerCase())
+       result = result.filter((b) =>
+         [b.fullName, b.materialType, b.email].some((field) =>
+           field.toLowerCase().includes(searchTerm.toLowerCase())
+         )
        );
      }
-
-     // Apply status filter
      if (statusFilter !== "All") {
-       result = result.filter((booking) => booking.status === statusFilter);
+       result = result.filter((b) => b.status === statusFilter);
      }
-
-     // Apply sorting
      if (sortConfig) {
        result.sort((a, b) => {
-         if (a[sortConfig.key] < b[sortConfig.key]) {
-           return sortConfig.direction === "asc" ? -1 : 1;
-         }
-         if (a[sortConfig.key] > b[sortConfig.key]) {
-           return sortConfig.direction === "asc" ? 1 : -1;
-         }
-         return 0;
+         const aValue = a[sortConfig.key];
+         const bValue = b[sortConfig.key];
+         return aValue < bValue
+           ? sortConfig.direction === "asc"
+             ? -1
+             : 1
+           : aValue > bValue
+           ? sortConfig.direction === "asc"
+             ? 1
+             : -1
+           : 0;
        });
      }
-
      return result;
    }, [bookings, searchTerm, statusFilter, sortConfig]);
 
    const handleSort = (key: keyof BookingData) => {
-     setSortConfig((current) => ({
+     setSortConfig((prev) => ({
        key,
        direction:
-         current?.key === key && current.direction === "asc" ? "desc" : "asc",
+         prev?.key === key && prev.direction === "asc" ? "desc" : "asc",
      }));
    };
 
    const handleApprove = (id: string) => {
-     setBookings((current) =>
-       current.map((booking) =>
-         booking.id === id ? { ...booking, status: "Active" as const } : booking
-       )
+     setBookings((prev) =>
+       prev.map((b) => (b.id === id ? { ...b, status: "Active" } : b))
      );
    };
 
    const handleDelete = (id: string) => {
-     setBookings((current) => current.filter((booking) => booking.id !== id));
+     setBookings((prev) => prev.filter((b) => b.id !== id));
    };
 
    return (
      <div className="p-8 max-w-7xl mx-auto space-y-8 bg-gray-50 min-h-screen">
-       <div className="flex justify-between items-center">
+       <div className="flex items-center gap-4">
+         <button
+           onClick={() => console.log("Back")}
+           className="p-2 rounded-full hover:bg-gray-200"
+         >
+           <ArrowLeft className="h-5 w-5" />
+         </button>
          <h1 className="text-3xl font-bold text-gray-900">
-           Booked Materials
+           Resource Analytics
          </h1>
        </div>
 
@@ -200,147 +180,119 @@
          ))}
        </div>
 
-       <div className="grid gap-4 md:grid-cols-2">
-         <div className="bg-white rounded-lg shadow-md p-6">
-           <div className="flex flex-col space-y-4">
-             <div className="flex items-center justify-between">
-               <h3 className="text-lg font-semibold">Recent Bookings</h3>
-               <div className="flex space-x-2">
-                 <div className="relative">
-                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                   <input
-                     type="text"
-                     placeholder="Search bookings..."
-                     className="pl-9 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                     value={searchTerm}
-                     onChange={(e) => setSearchTerm(e.target.value)}
-                   />
-                 </div>
-                 <select
-                   className="border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                   value={statusFilter}
-                   onChange={(e) =>
-                     setStatusFilter(
-                       e.target.value as BookingData["status"] | "All"
-                     )
-                   }
-                 >
-                   <option value="All">All Status</option>
-                   <option value="Pending">Pending</option>
-                   <option value="Active">Active</option>
-                   <option value="Completed">Completed</option>
-                   <option value="Overdue">Overdue</option>
-                 </select>
-               </div>
+       <div className="bg-white rounded-lg shadow-md p-6">
+         <div className="flex flex-col gap-4">
+           <div className="flex flex-col md:flex-row justify-between gap-4">
+             <div className="relative w-full md:max-w-xs">
+               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+               <input
+                 type="text"
+                 placeholder="Search bookings..."
+                 className="pl-9 pr-4 py-2 border rounded-md w-full"
+                 value={searchTerm}
+                 onChange={(e) => setSearchTerm(e.target.value)}
+               />
              </div>
+             <select
+               className="border rounded-md px-3 py-2"
+               value={statusFilter}
+               onChange={(e) =>
+                 setStatusFilter(
+                   e.target.value as BookingData["status"] | "All"
+                 )
+               }
+             >
+               <option value="All">All Status</option>
+               <option value="Pending">Pending</option>
+               <option value="Active">Active</option>
+               <option value="Completed">Completed</option>
+               <option value="Overdue">Overdue</option>
+             </select>
+           </div>
 
-             <div className="space-y-4">
-               <div className="grid grid-cols-2 gap-2 font-medium text-sm text-gray-600 pb-2 border-b">
-                 <div
-                   className="flex items-center cursor-pointer"
-                   onClick={() => handleSort("fullName")}
-                 >
-                   Name
-                   {sortConfig?.key === "fullName" &&
-                     (sortConfig.direction === "asc" ? (
-                       <ChevronUp className="h-4 w-4" />
-                     ) : (
-                       <ChevronDown className="h-4 w-4" />
-                     ))}
-                 </div>
-                 <div
-                   className="flex items-center cursor-pointer"
-                   onClick={() => handleSort("materialType")}
-                 >
-                   Material
-                   {sortConfig?.key === "materialType" &&
-                     (sortConfig.direction === "asc" ? (
-                       <ChevronUp className="h-4 w-4" />
-                     ) : (
-                       <ChevronDown className="h-4 w-4" />
-                     ))}
-                 </div>
-               </div>
-
-               {filteredAndSortedBookings.map((booking) => (
-                 <div
-                   key={booking.id}
-                   className="border-b last:border-0 pb-4 last:pb-0"
-                 >
-                   <div className="flex justify-between items-start mb-2">
-                     <div>
-                       <h4 className="font-medium">{booking.fullName}</h4>
-                       <p className="text-sm text-gray-600">
-                         {booking.materialType}
-                       </p>
-                     </div>
-                     <div className="flex items-center space-x-2">
+           <div className="overflow-x-auto">
+             <table className="min-w-full text-sm text-left">
+               <thead className="text-gray-600 font-medium border-b">
+                 <tr>
+                   {[
+                     "fullName",
+                     "materialType",
+                     "email",
+                     "pickupDateTime",
+                     "returnDateTime",
+                     "status",
+                   ].map((col) => (
+                     <th
+                       key={col}
+                       className="py-2 px-4 cursor-pointer hover:text-blue-600"
+                       onClick={() => handleSort(col as keyof BookingData)}
+                     >
+                       {col
+                         .replace(/([A-Z])/g, " $1")
+                         .replace(/^./, (s) => s.toUpperCase())}
+                     </th>
+                   ))}
+                   <th className="py-2 px-4">Actions</th>
+                 </tr>
+               </thead>
+               <tbody>
+                 {filteredAndSortedBookings.map((booking) => (
+                   <tr key={booking.id} className="border-t hover:bg-gray-50">
+                     <td className="py-2 px-4">{booking.fullName}</td>
+                     <td className="py-2 px-4">{booking.materialType}</td>
+                     <td className="py-2 px-4">{booking.email}</td>
+                     <td className="py-2 px-4">{booking.pickupDateTime}</td>
+                     <td className="py-2 px-4">{booking.returnDateTime}</td>
+                     <td className="py-2 px-4">
                        <span
-                         className={`px-2 py-1 rounded-full text-xs ${getStatusColor(
+                         className={`px-2 py-1 text-xs font-semibold rounded ${getStatusColor(
                            booking.status
                          )}`}
                        >
                          {booking.status}
                        </span>
+                     </td>
+                     <td className="py-2 px-4 space-x-2">
                        {booking.status === "Pending" && (
                          <button
                            onClick={() => handleApprove(booking.id)}
-                           className="p-1 text-green-600 hover:bg-green-50 rounded-full"
+                           className="text-green-600 hover:underline"
                          >
-                           <CheckCircle className="h-4 w-4" />
+                           <CheckCircle className="inline h-4 w-4 mr-1" />{" "}
+                           Approve
                          </button>
                        )}
                        <button
                          onClick={() => handleDelete(booking.id)}
-                         className="p-1 text-red-600 hover:bg-red-50 rounded-full"
+                         className="text-red-600 hover:underline"
                        >
-                         <Trash2 className="h-4 w-4" />
+                         <Trash2 className="inline h-4 w-4 mr-1" /> Delete
                        </button>
-                     </div>
-                   </div>
-                   <div className="grid grid-cols-2 gap-2 text-sm text-gray-600">
-                     <div className="flex items-center gap-1">
-                       <Mail className="h-4 w-4" />
-                       {booking.email}
-                     </div>
-                     <div className="flex items-center gap-1">
-                       <PhoneCall className="h-4 w-4" />
-                       {booking.phoneNumber}
-                     </div>
-                     <div className="flex items-center gap-1">
-                       <Calendar className="h-4 w-4" />
-                       Pickup: {booking.pickupDateTime}
-                     </div>
-                     <div className="flex items-center gap-1">
-                       <Calendar className="h-4 w-4" />
-                       Return: {booking.returnDateTime}
-                     </div>
-                   </div>
-                 </div>
-               ))}
-             </div>
+                     </td>
+                   </tr>
+                 ))}
+               </tbody>
+             </table>
            </div>
          </div>
+       </div>
 
-         <div className="bg-white rounded-lg shadow-md p-6">
-           <h3 className="text-lg font-semibold mb-4">Weekly Booking Trend</h3>
-           <div className="h-[300px]">
-             <ResponsiveContainer width="100%" height="100%">
-               <LineChart data={trendData}>
-                 <CartesianGrid strokeDasharray="3 3" />
-                 <XAxis dataKey="name" />
-                 <YAxis />
-                 <Tooltip />
-                 <Line
-                   type="monotone"
-                   dataKey="bookings"
-                   stroke="#8884d8"
-                   strokeWidth={2}
-                 />
-               </LineChart>
-             </ResponsiveContainer>
-           </div>
-         </div>
+       <div className="bg-white rounded-lg shadow-md p-6">
+         <h3 className="text-lg font-semibold mb-4">Weekly Booking Trend</h3>
+         <ResponsiveContainer width="100%" height={300}>
+           <LineChart data={trendData}>
+             <CartesianGrid strokeDasharray="3 3" />
+             <XAxis dataKey="name" />
+             <YAxis />
+             <Tooltip />
+             <Line
+               type="monotone"
+               dataKey="bookings"
+               stroke="#4F46E5"
+               strokeWidth={2}
+             />
+           </LineChart>
+         </ResponsiveContainer>
        </div>
      </div>
    );

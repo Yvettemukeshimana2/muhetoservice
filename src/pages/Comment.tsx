@@ -1,313 +1,466 @@
-import React, { useState, useCallback, ReactNode } from "react";
-import { Mail, Search, Trash2, Reply, Check, Star } from "lucide-react";
+ import { useState } from "react";
+ import {
+   Calendar,
+   Clock,
+   User,
+   Package,
+   Phone,
+   MapPin,
+   CreditCard,
+   FileText,
+   AlertCircle,
+ } from "lucide-react";
 
-type CardProps = {
-  children: ReactNode;
-  className?: string;
-};
+ // Define types for our data structures
+ interface RenterInfo {
+   id: string;
+   name: string;
+   email: string;
+   phone: string;
+   address: string;
+   idVerified: boolean;
+   paymentMethod: {
+     type: string;
+     lastFour: string;
+     expiryDate: string;
+   };
+ }
 
-type CardSectionProps = {
-  children: ReactNode;
-};
+ interface RentalItem {
+   id: string;
+   name: string;
+   category: string;
+   description: string;
+   condition: string;
+   dailyRate: number;
+   replacementValue: number;
+   imageUrl: string;
+   owner: {
+     name: string;
+     id: string;
+   };
+ }
 
-const Card: React.FC<CardProps> = ({ children, className = "" }) => (
-  <div className={`bg-white rounded-lg border shadow-sm ${className}`}>
-    {children}
-  </div>
-);
+ interface RentalPeriod {
+   startDate: string;
+   endDate: string;
+   totalDays: number;
+ }
 
-const CardHeader: React.FC<CardSectionProps> = ({ children }) => (
-  <div className="border-b p-6">{children}</div>
-);
+ interface RentalAgreement {
+   id: string;
+   renter: RenterInfo;
+   item: RentalItem;
+   period: RentalPeriod;
+   status: "pending" | "active" | "completed" | "cancelled";
+   totalCost: number;
+   deposit: number;
+   specialInstructions?: string;
+   dateCreated: string;
+ }
 
-const CardTitle: React.FC<CardSectionProps> = ({ children }) => (
-  <h2 className="text-xl font-semibold">{children}</h2>
-);
+ interface RentalDetailsProps {
+   rentalAgreement: RentalAgreement;
+   onApprove?: () => void;
+   onCancel?: () => void;
+ }
 
-const CardContent: React.FC<CardSectionProps> = ({ children }) => (
-  <div className="p-6">{children}</div>
-);
+ const RentalDetails = ({
+   rentalAgreement,
+   onApprove,
+   onCancel,
+ }: RentalDetailsProps) => {
+   const [showFullDescription, setShowFullDescription] = useState(false);
+   const {
+     renter,
+     item,
+     period,
+     status,
+     totalCost,
+     deposit,
+     specialInstructions,
+     dateCreated,
+   } = rentalAgreement;
 
-interface Message {
-  id: number;
-  name: string;
-  email: string;
-  subject: string;
-  content: string;
-  date: string;
-  status: "Read" | "Unread";
-  priority: "High" | "Medium" | "Low";
-}
+   // Format currency values
+   const formatCurrency = (amount: number) => {
+     return new Intl.NumberFormat("en-US", {
+       style: "currency",
+       currency: "USD",
+     }).format(amount);
+   };
 
-type SortField = "date" | "name" | "priority";
-type FilterStatus = "All" | "Read" | "Unread";
-type FilterPriority = "All" | "High" | "Medium" | "Low";
+   // Format dates
+   const formatDate = (dateString: string) => {
+     return new Date(dateString).toLocaleDateString("en-US", {
+       year: "numeric",
+       month: "long",
+       day: "numeric",
+     });
+   };
 
-const CommentsPage: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john.doe@example.com",
-      subject: "Product Inquiry",
-      content: "I would like to know more about your services.",
-      date: "2024-03-15",
-      status: "Read",
-      priority: "High",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "jane.smith@example.com",
-      subject: "Partnership Opportunity",
-      content: "We'd like to discuss potential collaboration.",
-      date: "2024-03-14",
-      status: "Unread",
-      priority: "Medium",
-    },
-    {
-      id: 3,
-      name: "Bob Johnson",
-      email: "bob.johnson@example.com",
-      subject: "Support Request",
-      content: "Need assistance with setting up.",
-      date: "2024-03-13",
-      status: "Unread",
-      priority: "Low",
-    },
-  ]);
+   // Calculate remaining time for active rentals
+   const calculateRemainingTime = () => {
+     if (status !== "active") return null;
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortField, setSortField] = useState<SortField>("date");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
-  const [statusFilter, setStatusFilter] = useState<FilterStatus>("All");
-  const [priorityFilter, setPriorityFilter] = useState<FilterPriority>("All");
+     const endDate = new Date(period.endDate);
+     const now = new Date();
+     const diffTime = endDate.getTime() - now.getTime();
+     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-  const getStatusStyles = (status: "Read" | "Unread") => {
-    return status === "Read"
-      ? "bg-gray-100 text-gray-800"
-      : "bg-blue-100 text-blue-800";
-  };
+     return diffDays > 0 ? `${diffDays} days remaining` : "Due today";
+   };
 
-  const getPriorityStyles = (priority: "High" | "Medium" | "Low") => {
-    switch (priority) {
-      case "High":
-        return "text-red-500";
-      case "Medium":
-        return "text-yellow-500";
-      case "Low":
-        return "text-green-500";
-    }
-  };
+   const remainingTime = calculateRemainingTime();
 
-  const handleDelete = (id: number) => {
-    setMessages((prev) => prev.filter((message) => message.id !== id));
-  };
+   const getStatusBadgeClass = () => {
+     switch (status) {
+       case "pending":
+         return "bg-yellow-100 text-yellow-800";
+       case "active":
+         return "bg-green-100 text-green-800";
+       case "completed":
+         return "bg-blue-100 text-blue-800";
+       case "cancelled":
+         return "bg-red-100 text-red-800";
+       default:
+         return "bg-gray-100 text-gray-800";
+     }
+   };
 
-  const handleMarkAsRead = (id: number) => {
-    setMessages((prev) =>
-      prev.map((message) =>
-        message.id === id ? { ...message, status: "Read" } : message
-      )
-    );
-  };
+   return (
+     <div className="bg-white rounded-lg shadow-md overflow-hidden">
+       {/* Header with status */}
+       <div className="bg-gray-50 px-6 py-4 border-b">
+         <div className="flex justify-between items-center">
+           <h2 className="text-xl font-semibold text-gray-800">
+             Rental Agreement #{rentalAgreement.id}
+           </h2>
+           <span
+             className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusBadgeClass()}`}
+           >
+             {status.charAt(0).toUpperCase() + status.slice(1)}
+           </span>
+         </div>
+         <p className="text-sm text-gray-500 mt-1">
+           Created on {formatDate(dateCreated)}
+         </p>
+       </div>
 
-  const handleReply = (email: string) => {
-    // In a real application, this would open a compose modal or navigate to a compose page
-    alert(`Replying to ${email}`);
-  };
+       <div className="p-6">
+         <div className="grid md:grid-cols-2 gap-8">
+           {/* Left column - Renter information */}
+           <div>
+             <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+               <User className="h-5 w-5 mr-2 text-gray-500" />
+               Renter Information
+             </h3>
 
-  const filteredAndSortedMessages = useCallback(() => {
-    return messages
-      .filter((message) => {
-        const matchesSearch =
-          message.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          message.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          message.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          message.content.toLowerCase().includes(searchQuery.toLowerCase());
+             <div className="bg-gray-50 rounded-lg p-4">
+               <div className="flex justify-between items-start mb-4">
+                 <div>
+                   <h4 className="font-medium text-gray-900">{renter.name}</h4>
+                   <p className="text-sm text-gray-600">{renter.email}</p>
+                 </div>
+                 {renter.idVerified && (
+                   <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full flex items-center">
+                     <AlertCircle className="h-3 w-3 mr-1" />
+                     ID Verified
+                   </span>
+                 )}
+               </div>
 
-        const matchesStatus =
-          statusFilter === "All" || message.status === statusFilter;
+               <div className="space-y-3">
+                 <div className="flex items-start">
+                   <Phone className="h-4 w-4 text-gray-500 mt-1 mr-3" />
+                   <div>
+                     <p className="text-sm text-gray-600">Phone Number</p>
+                     <p className="text-sm font-medium">{renter.phone}</p>
+                   </div>
+                 </div>
 
-        const matchesPriority =
-          priorityFilter === "All" || message.priority === priorityFilter;
+                 <div className="flex items-start">
+                   <MapPin className="h-4 w-4 text-gray-500 mt-1 mr-3" />
+                   <div>
+                     <p className="text-sm text-gray-600">Address</p>
+                     <p className="text-sm font-medium">{renter.address}</p>
+                   </div>
+                 </div>
 
-        return matchesSearch && matchesStatus && matchesPriority;
-      })
-      .sort((a, b) => {
-        let comparison = 0;
-        switch (sortField) {
-          case "date":
-            comparison =
-              new Date(b.date).getTime() - new Date(a.date).getTime();
-            break;
-          case "name":
-            comparison = a.name.localeCompare(b.name);
-            break;
-          case "priority":
-            const priorityOrder = { High: 3, Medium: 2, Low: 1 };
-            comparison =
-              priorityOrder[b.priority as keyof typeof priorityOrder] -
-              priorityOrder[a.priority as keyof typeof priorityOrder];
-            break;
-        }
-        return sortDirection === "asc" ? comparison : -comparison;
-      });
-  }, [
-    messages,
-    searchQuery,
-    sortField,
-    sortDirection,
-    statusFilter,
-    priorityFilter,
-  ]);
+                 <div className="flex items-start">
+                   <CreditCard className="h-4 w-4 text-gray-500 mt-1 mr-3" />
+                   <div>
+                     <p className="text-sm text-gray-600">Payment Method</p>
+                     <p className="text-sm font-medium">
+                       {renter.paymentMethod.type} ending in{" "}
+                       {renter.paymentMethod.lastFour}
+                     </p>
+                     <p className="text-xs text-gray-500">
+                       Expires {renter.paymentMethod.expiryDate}
+                     </p>
+                   </div>
+                 </div>
+               </div>
+             </div>
+           </div>
 
-  return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Messages</h1>
-      <Card>
-        <CardHeader>
-          <div className="space-y-4">
-            <CardTitle>Inbox</CardTitle>
-            <div className="flex flex-wrap gap-4">
-              {/* Search Bar */}
-              <div className="flex-1 min-w-[200px]">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                  <input
-                    type="text"
-                    placeholder="Search messages..."
-                    className="w-full pl-10 pr-4 py-2 border rounded-lg"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </div>
-              </div>
+           {/* Right column - Item information */}
+           <div>
+             <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+               <Package className="h-5 w-5 mr-2 text-gray-500" />
+               Item Details
+             </h3>
 
-              {/* Filters */}
-              <select
-                className="border rounded-lg px-4 py-2"
-                value={statusFilter}
-                onChange={(e) =>
-                  setStatusFilter(e.target.value as FilterStatus)
-                }
-              >
-                <option value="All">All Status</option>
-                <option value="Read">Read</option>
-                <option value="Unread">Unread</option>
-              </select>
+             <div className="bg-gray-50 rounded-lg p-4">
+               <div className="flex gap-4 mb-4">
+                 <div className="w-20 h-20 bg-gray-200 rounded flex-shrink-0">
+                   {item.imageUrl && (
+                     <img
+                       src={item.imageUrl}
+                       alt={item.name}
+                       className="w-full h-full object-cover rounded"
+                     />
+                   )}
+                 </div>
 
-              <select
-                className="border rounded-lg px-4 py-2"
-                value={priorityFilter}
-                onChange={(e) =>
-                  setPriorityFilter(e.target.value as FilterPriority)
-                }
-              >
-                <option value="All">All Priority</option>
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-              </select>
+                 <div>
+                   <h4 className="font-medium text-gray-900">{item.name}</h4>
+                   <p className="text-sm text-gray-600">{item.category}</p>
+                   <p className="text-sm text-gray-600 mt-1">
+                     Owner: {item.owner.name}
+                   </p>
+                 </div>
+               </div>
 
-              {/* Sort Options */}
-              <select
-                className="border rounded-lg px-4 py-2"
-                value={sortField}
-                onChange={(e) => setSortField(e.target.value as SortField)}
-              >
-                <option value="date">Sort by Date</option>
-                <option value="name">Sort by Name</option>
-                <option value="priority">Sort by Priority</option>
-              </select>
+               <div className="space-y-3">
+                 <div>
+                   <p className="text-sm text-gray-600">Description</p>
+                   <p className="text-sm">
+                     {showFullDescription
+                       ? item.description
+                       : `${item.description.substring(0, 100)}${
+                           item.description.length > 100 ? "..." : ""
+                         }`}
+                   </p>
+                   {item.description.length > 100 && (
+                     <button
+                       className="text-sm text-blue-600 mt-1 hover:underline"
+                       onClick={() =>
+                         setShowFullDescription(!showFullDescription)
+                       }
+                     >
+                       {showFullDescription ? "Show less" : "Read more"}
+                     </button>
+                   )}
+                 </div>
 
-              <button
-                className="border rounded-lg px-4 py-2"
-                onClick={() =>
-                  setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"))
-                }
-              >
-                {sortDirection === "asc" ? "↑" : "↓"}
-              </button>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {filteredAndSortedMessages().map((message) => (
-              <div
-                key={message.id}
-                className="border-b last:border-0 pb-4 last:pb-0"
-              >
-                <div className="flex items-start space-x-4">
-                  <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
-                    <Mail className="h-5 w-5 text-gray-600" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="font-medium">{message.name}</h3>
-                        <p className="text-sm text-gray-500">{message.email}</p>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Star
-                          className={`h-5 w-5 ${getPriorityStyles(
-                            message.priority
-                          )}`}
-                          fill={
-                            message.priority === "High"
-                              ? "currentColor"
-                              : "none"
-                          }
-                        />
-                        <span
-                          className={`px-2 py-1 rounded-full text-xs ${getStatusStyles(
-                            message.status
-                          )}`}
-                        >
-                          {message.status}
-                        </span>
-                      </div>
-                    </div>
-                    <h4 className="font-medium text-gray-700 mt-2">
-                      {message.subject}
-                    </h4>
-                    <p className="text-gray-600 mt-1">{message.content}</p>
-                    <div className="flex items-center justify-between mt-2">
-                      <p className="text-xs text-gray-500">{message.date}</p>
-                      <div className="flex space-x-2">
-                        <button
-                          onClick={() => handleReply(message.email)}
-                          className="p-1 hover:bg-gray-100 rounded"
-                          title="Reply"
-                        >
-                          <Reply className="h-4 w-4 text-gray-600" />
-                        </button>
-                        <button
-                          onClick={() => handleMarkAsRead(message.id)}
-                          className="p-1 hover:bg-gray-100 rounded"
-                          title="Mark as read"
-                        >
-                          <Check className="h-4 w-4 text-gray-600" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(message.id)}
-                          className="p-1 hover:bg-gray-100 rounded text-red-500"
-                          title="Delete"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-};
+                 <div className="grid grid-cols-2 gap-3">
+                   <div>
+                     <p className="text-sm text-gray-600">Condition</p>
+                     <p className="text-sm font-medium">{item.condition}</p>
+                   </div>
 
-export default CommentsPage;
+                   <div>
+                     <p className="text-sm text-gray-600">Daily Rate</p>
+                     <p className="text-sm font-medium">
+                       {formatCurrency(item.dailyRate)}
+                     </p>
+                   </div>
+
+                   <div>
+                     <p className="text-sm text-gray-600">Replacement Value</p>
+                     <p className="text-sm font-medium">
+                       {formatCurrency(item.replacementValue)}
+                     </p>
+                   </div>
+                 </div>
+               </div>
+             </div>
+           </div>
+         </div>
+
+         {/* Rental period and costs */}
+         <div className="mt-8 border-t pt-6">
+           <div className="grid md:grid-cols-2 gap-8">
+             <div>
+               <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                 <Calendar className="h-5 w-5 mr-2 text-gray-500" />
+                 Rental Period
+               </h3>
+
+               <div className="bg-gray-50 rounded-lg p-4 space-y-4">
+                 <div className="flex justify-between">
+                   <div>
+                     <p className="text-sm text-gray-600">Start Date</p>
+                     <p className="text-sm font-medium">
+                       {formatDate(period.startDate)}
+                     </p>
+                   </div>
+                   <div>
+                     <p className="text-sm text-gray-600">End Date</p>
+                     <p className="text-sm font-medium">
+                       {formatDate(period.endDate)}
+                     </p>
+                   </div>
+                 </div>
+
+                 <div className="flex justify-between items-center border-t pt-4">
+                   <p className="text-sm font-medium">Duration</p>
+                   <div className="flex items-center">
+                     <Clock className="h-4 w-4 mr-2 text-gray-500" />
+                     <p className="text-sm font-medium">
+                       {period.totalDays} days
+                     </p>
+                   </div>
+                 </div>
+
+                 {remainingTime && (
+                   <div className="border-t pt-4">
+                     <p className="text-sm font-medium text-green-700">
+                       {remainingTime}
+                     </p>
+                   </div>
+                 )}
+               </div>
+             </div>
+
+             <div>
+               <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                 <CreditCard className="h-5 w-5 mr-2 text-gray-500" />
+                 Cost Breakdown
+               </h3>
+
+               <div className="bg-gray-50 rounded-lg p-4 space-y-4">
+                 <div className="flex justify-between">
+                   <p className="text-sm">
+                     Daily Rate × {period.totalDays} days
+                   </p>
+                   <p className="text-sm font-medium">
+                     {formatCurrency(item.dailyRate * period.totalDays)}
+                   </p>
+                 </div>
+
+                 <div className="flex justify-between">
+                   <p className="text-sm">Security Deposit (refundable)</p>
+                   <p className="text-sm font-medium">
+                     {formatCurrency(deposit)}
+                   </p>
+                 </div>
+
+                 <div className="flex justify-between border-t pt-4">
+                   <p className="font-medium">Total Cost</p>
+                   <p className="font-medium">{formatCurrency(totalCost)}</p>
+                 </div>
+               </div>
+             </div>
+           </div>
+         </div>
+
+         {/* Special instructions */}
+         {specialInstructions && (
+           <div className="mt-8 border-t pt-6">
+             <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center">
+               <FileText className="h-5 w-5 mr-2 text-gray-500" />
+               Special Instructions
+             </h3>
+             <div className="bg-gray-50 rounded-lg p-4">
+               <p className="text-sm">{specialInstructions}</p>
+             </div>
+           </div>
+         )}
+
+         {/* Action buttons */}
+         {status === "pending" && (
+           <div className="mt-8 border-t pt-6 flex justify-end space-x-4">
+             {onCancel && (
+               <button
+                 className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                 onClick={onCancel}
+               >
+                 Cancel Rental
+               </button>
+             )}
+             {onApprove && (
+               <button
+                 className="px-4 py-2 bg-blue-600 rounded-md text-sm font-medium text-white hover:bg-blue-700"
+                 onClick={onApprove}
+               >
+                 Approve Rental
+               </button>
+             )}
+           </div>
+         )}
+       </div>
+     </div>
+   );
+ };
+
+ // Example rental agreement data for demonstration
+ const exampleRentalAgreement: RentalAgreement = {
+   id: "R12345",
+   renter: {
+     id: "U789",
+     name: "Alice Johnson",
+     email: "alice@example.com",
+     phone: "(555) 123-4567",
+     address: "123 Main St, Anytown, CA 94321",
+     idVerified: true,
+     paymentMethod: {
+       type: "Visa",
+       lastFour: "4242",
+       expiryDate: "04/26",
+     },
+   },
+   item: {
+     id: "I456",
+     name: "DSLR Camera Kit",
+     category: "Photography Equipment",
+     description:
+       "Professional Canon EOS R5 with 24-70mm lens, extra battery, and carrying case. Perfect for portrait and landscape photography.",
+     condition: "Excellent",
+     dailyRate: 65.0,
+     replacementValue: 3500.0,
+     imageUrl: "/images/camera.jpg",
+     owner: {
+       name: "Bob Smith",
+       id: "U456",
+     },
+   },
+   period: {
+     startDate: "2025-04-15",
+     endDate: "2025-04-20",
+     totalDays: 5,
+   },
+   status: "pending",
+   totalCost: 325.0,
+   deposit: 500.0,
+   specialInstructions:
+     "Please handle with care. The equipment needs to be returned with all batteries fully charged.",
+   dateCreated: "2025-04-13",
+ };
+
+ // Example App component showing how to use the RentalDetails component
+ const CommentsPage = () => {
+   const handleApprove = () => {
+     console.log("Rental approved!");
+     // Add your approval logic here
+   };
+
+   const handleCancel = () => {
+     console.log("Rental cancelled!");
+     // Add your cancellation logic here
+   };
+
+   return (
+     <div className="container mx-auto p-4">
+       <h1 className="text-2xl font-bold mb-6">Rental Management</h1>
+       <RentalDetails
+         rentalAgreement={exampleRentalAgreement}
+         onApprove={handleApprove}
+         onCancel={handleCancel}
+       />
+     </div>
+   );
+ };
+
+ export default CommentsPage;
